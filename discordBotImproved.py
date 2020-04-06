@@ -5,7 +5,7 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import requests
 import numpy as np
-#from bs4 import BeautifulSoup
+# from bs4 import BeautifulSoup
 
 token = 'Njk0OTkyMDE5MTY4MTY2MDIx.XoTsQA.7I79yywDCsWN0SDaZS085OS6SoE'
 prefix = ';'
@@ -21,19 +21,19 @@ async def Move(context, *args):
         channelNameFrom = args[1]
         channelNameTo = args[2]
         channelFound = None
-        channelHasBeenFound = False
+        channelFound = False
         print(channelNameFrom)
         print(channelNameTo)
         for channel in client.get_all_channels():
             if isinstance(channel, discord.VoiceChannel):
-                if (channelNameFrom == channel.name and not channelHasBeenFound):
+                if (channelNameFrom == channel.name and not channelFound):
                     channelFound = channel
-                    channelHasBeenFound = True
+                    channelFound = True
                     break
 
         for channel in client.get_all_channels():
             if isinstance(channel, discord.VoiceChannel):
-                if (channelNameTo == channel.name and channelHasBeenFound):
+                if (channelNameTo == channel.name and channelFound):
                     await context.message.channel.send(
                         'moving everyone from the channel %s to the channel ' % channelFound.name + channel.name)
                     for user in channelFound.members:
@@ -52,11 +52,11 @@ def seperateCourse(args, argIndex):
 async def getCourses(context, *arg):
     url = 'https://banner.aus.edu/axp3b21h/owa/bwckschd.p_disp_dyn_sched'
     driver.get(url)  # go to banner on the headless browser
-
-    elem = driver.find_element_by_name('p_term')  # find the HTML element with name p_term which allows the browser to select the semester
+    # find the HTML element with name p_term which allows the browser to select the semester
+    elem = driver.find_element_by_name('p_term')
     for option in elem.find_elements_by_tag_name('option'):
         if (option.get_attribute("value") == '202110'): 
-            option.click()  # select the semester with value 202110 (first 4 are year, last 2 are semester)
+            option.click()
     driver.find_element_by_xpath("//input[@type='submit']").click()  # find an input element with a type of submit
     elem = driver.find_element_by_id('subj_id')
 
@@ -183,7 +183,7 @@ async def spellcheck(context, *args):
     response = requests.request("GET", url, headers=headers, params=querystring)
     jsonFile = response.json()
     print(response.text)
-    #print(response.json()['corrections'][querystring['text']])
+    # print(response.json()['corrections'][querystring['text']])
     if word in jsonFile['corrections']:
         await context.message.channel.send("Correction: " + ''.join(jsonFile['suggestion']) + '\n'
         + 'Other possible corrections: ' + ' '.join(jsonFile['corrections'][word]))
